@@ -1,0 +1,133 @@
+<div class="container">
+    <form [formGroup]="form" class="input-form">
+        <h1>Generator Torsional Mode Calculator</h1>
+
+        <!-- Main Inputs Section -->
+        <div class="form-section" formGroupName="basicInfo">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>name</label>
+                    <input type="text" formControlName="name">
+                </div>
+
+                <div class="input-group">
+                    <label>MVA</label>
+                    <input type="number" formControlName="mva">
+                </div>
+                <div class="input-group">
+                    <label>fnom</label>
+                    <input type="number" formControlName="fnom">
+                </div>
+                <div class="input-group">
+                    <label>p</label>
+                    <input type="number" formControlName="p">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>gen type</label>
+                    <input type="text" formControlName="gen_type">
+                </div>
+                <div class="input-group">
+                    <label>date</label>
+                    <input type="date" formControlName="date">
+                </div>
+            </div>
+        </div>
+
+        <!-- Units Section -->
+        <div class="form-section" formGroupName="units">
+            <h3>Units</h3>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>j units</label>
+                    <select formControlName="jUnits">
+                        <option *ngFor="let unit of jUnitsOptions" [value]="unit">{{unit}}</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>k units</label>
+                    <select formControlName="kUnits">
+                        <option *ngFor="let unit of kUnitsOptions" [value]="unit">{{unit}}</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>d units</label>
+                    <select formControlName="dUnits">
+                        <option *ngFor="let unit of dUnitsOptions" [value]="unit">{{unit}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gen/Exc Section -->
+        <div class="form-section" formGroupName="genExc">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Gen</label>
+                    <input type="number" formControlName="gen">
+                </div>
+                <div class="input-group">
+                    <label>Exc</label>
+                    <input type="number" formControlName="exc">
+                </div>
+                <div class="input-group">
+                    <label>d type</label>
+                    <select formControlName="dtype">
+                        <option *ngFor="let type of dtypeOptions" [value]="type">{{type}}</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Elements Configuration -->
+        <div class="form-section elements-config">
+            <!-- No. of Masses Input -->
+            <div class="input-row">
+                <label>No.of Masses</label>
+                <div class="grid-row">
+                    <input type="number" formControlName="no_of_masses" min="1">
+                </div>
+            </div>
+
+            <!-- Combined Row per Mass Index -->
+            <div *ngIf="form.get('no_of_masses')?.value">
+                <h3>Mass Configuration</h3>
+                <div class="mass-grid">
+                    <div class="mass-row"
+                        *ngFor="let i of [].constructor(form.get('no_of_masses')?.value); let idx = index">
+                        <div class="mass-input">
+                            <label>elname {{ idx + 1 }}</label>
+                            <input type="text" [formControl]="$any(elnames.controls[idx])">
+                        </div>
+                        <div class="mass-input">
+                            <label>J {{ idx + 1 }}</label>
+                            <input type="number" [formControl]="$any(js.controls[idx])">
+                        </div>
+                        <div class="mass-input" *ngIf="idx < form.get('no_of_masses')?.value - 1">
+                            <label>K {{ idx + 1 }}</label>
+                            <input type="number" [formControl]="$any(ks.controls[idx])">
+                        </div>
+                        <div class="mass-input" *ngIf="idx < 2">
+                            <label>D {{ idx + 1 }}</label>
+                            <input type="number" [formControl]="$any(ds.controls[idx])">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="submit-section">
+                <button type="submit" class="submit-btn" (click)="onSubmit()">
+                    Generate Report
+                </button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+</div>
